@@ -1,5 +1,8 @@
 package il.ac.tau.cs.software1.bigram;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -79,8 +82,47 @@ public class BigramModel {
      * @post: mBigramCounts = prev(mBigramCounts)
      */
     public String[] buildVocabularyIndex(String fileName) throws IOException { // Question 1
-        // TODO: implement
-        return null;
+        String[] words = new String[MAX_VOCABULARY_SIZE];
+        int count = 0;
+
+        File fromFile = new File(fileName);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(fromFile));
+        String line;
+        while ((line = bufferedReader.readLine()) != null && count < MAX_VOCABULARY_SIZE) {
+            String[] tokens = line.trim().split("\\s+");
+            for (String token : tokens) {
+                String word = normalizeWord(token);
+                if (word == null) {
+                    continue;
+                }
+                if (count < MAX_VOCABULARY_SIZE && !isInVocabulary(words, word)) {
+                    words[count] = word;
+                    count++;
+                }
+            }
+        }
+        bufferedReader.close();
+
+        String[] result = new String[count];
+        for (int i = 0; i < count; i++) {
+            result[i] = words[i];
+        }
+        return result;
+    }
+
+    /*
+     * @pre: words != null, and its non-null cells come first, with no gaps
+     * @post: $ret = true iff word appears in words before the first null cell
+     */
+    private static boolean isInVocabulary(String[] words, String word) {
+        int i = 0;
+        while (i < MAX_VOCABULARY_SIZE && words[i] != null) {
+            if (word.equals(words[i])) {
+                return true;
+            }
+            i++;
+        }
+        return false;
     }
 
     /*
