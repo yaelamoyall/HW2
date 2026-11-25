@@ -2,6 +2,7 @@ package il.ac.tau.cs.software1.pacman;
 
 import il.ac.tau.cs.software1.core.*;
 import il.ac.tau.cs.software1.inventory.Collectible;
+import il.ac.tau.cs.software1.inventory.Inventory;
 import il.ac.tau.cs.software1.inventory.InventoryComponent;
 import il.ac.tau.cs.software1.components.ImageComponent;
 import il.ac.tau.cs.software1.math.Vector2;
@@ -9,8 +10,7 @@ import il.ac.tau.cs.software1.math.Vector2;
 public class PacmanPlayer extends PacmanGameObject {
 		
 	protected int score = 0;
-	
-	// TODO (Question 9): add a private field of type InventoryComponent, and initialize it
+	private InventoryComponent inventoryComponent = new InventoryComponent(); 
 	
 	public PacmanPlayer(PacmanGridComponent initialPosition) {
 		super(initialPosition);
@@ -42,21 +42,21 @@ public class PacmanPlayer extends PacmanGameObject {
 		
 		else if (other instanceof PacmanBonus) {
 			PacmanBonus bonus = (PacmanBonus) other;
-			
-			// TODO (Question 9): replace the two lines below.
-			// Instead of eating (destroying) the bonus, the player should stash it in the inventory,
-			// but only if it is not too heavy to carry. See the assignment for the exact rules.
-			addScore(bonus.bonusScore);
-			other.destroy();
-			
-			// Hint: every PacmanBonus is also a Collectible
 			Collectible collectible = (Collectible) other;
+
+			Inventory inventory = inventoryComponent.getInventory();
+			float weightAfter = inventory.getTotalWeight() + collectible.getWeight();
+
+			if (weightAfter <= inventoryComponent.getMaxWeight()) {
+				bonus.getTransformComponent().position = inventoryComponent.getInventoryPosition().copy();
+				inventory.collect(collectible);
+				addScore(bonus.bonusScore);
+			}
 		}
 	}
 	
 	public InventoryComponent getInventoryComponent() {
-		// TODO (Question 9): return the InventoryComponent field
-		return null;
+		return inventoryComponent*.;
 	}
 	
 	public void addScore(int bonus) {
