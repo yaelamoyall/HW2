@@ -56,7 +56,7 @@ public class PacmanPlayer extends PacmanGameObject {
 	}
 	
 	public InventoryComponent getInventoryComponent() {
-		return inventoryComponent*.;
+		return inventoryComponent;
 	}
 	
 	public void addScore(int bonus) {
